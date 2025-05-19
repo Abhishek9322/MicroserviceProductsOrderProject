@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  orderservice:
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+    ports:
+      - "5002:80"
+    depends_on:
+      - rabbitmq
+      - sqlserver
+
+  productservice:
+    build:
+      context: .
+      dockerfile: ProductService/Dockerfile
+    ports:
+      - "5001:80"
+    depends_on:
+      - rabbitmq
+      - sqlserver
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # RabbitMQ Web UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: "AbhiKambleproduct@1234"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
